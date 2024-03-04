@@ -9,6 +9,7 @@ const Register = () => {
     const [check, setCheck] = useState(false);
     const {signUp, updateUserProfile} = useContext(AuthContext);
     const navigate = useNavigate();
+     const from = location.state?.from?.pathname || '/';
     const handleRegister = e => {
       e.preventDefault();
       const form = e.target;
@@ -17,7 +18,7 @@ const Register = () => {
       const name = form.name.value;
       const photoURL = form.photo.value;
       console.log(email, password);
-     const from = location.state?.from?.pathname || '/';
+    
    setError('');
    signUp(email, password)
    .then(result=>{
@@ -27,7 +28,7 @@ const Register = () => {
      updateUserProfile(name, photoURL)
      .then(()=>{
        const saveUser = {name: loggedUser.displayName, role: 'user', email: loggedUser.email, image: loggedUser.photoURL};
-       fetch('http://localhost:5000/users', {
+       fetch('https://advisoropedia-assignment-server.vercel.app/users', {
          method: 'POST',
          headers: {
            'content-type' : 'application/json'
@@ -61,11 +62,33 @@ const Register = () => {
     const {signInwithGoogle} = useContext(AuthContext);
     const handleGoogle = () =>{
         signInwithGoogle()
-        .then(result=>{
-            const user = result.user;
-            console.log(user)
-            navigate('/')
-        })
+        .then(result => {
+          const user = result.user;
+          console.log(user);
+          
+            const loggedUser = {
+              email: user.email
+            }
+            console.log(loggedUser);
+            fetch('https://advisoropedia-assignment-server.vercel.app/jwt', {
+              method: "POST",
+              headers: {
+                'content-type': 'Application/json'
+              },
+              body: JSON.stringify(loggedUser)
+            })
+            .then(res => res.json())
+            .then(data => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Wow!',
+                text: 'Login Successfully'
+              })
+              console.log(data);
+              localStorage.setItem('post-acces-token', data.token)
+              navigate(from, {replace: true});
+            })
+      })
         .catch(error=>setError(error.message))
     }
     

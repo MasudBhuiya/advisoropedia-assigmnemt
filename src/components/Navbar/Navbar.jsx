@@ -7,7 +7,9 @@ const Navbar = () => {
     // console.log(user);
     const handleLogout = () =>{
       logOut()
-      .then()
+      .then(()=>{
+        localStorage.removeItem('post-acces-token')
+      })
       .catch(err=> {
         console.log(err.message);
       })

@@ -23,13 +23,30 @@ const Login = () => {
         .then(result => {
             const user = result.user;
             console.log(user);
-            Swal.fire({
-                icon: 'success',
-                title: 'Wow!',
-                text: 'Login Successfully'
+            
+              const loggedUser = {
+                email: user.email
+              }
+              console.log(loggedUser);
+              fetch('https://advisoropedia-assignment-server.vercel.app/jwt', {
+                method: "POST",
+                headers: {
+                  'content-type': 'Application/json'
+                },
+                body: JSON.stringify(loggedUser)
               })
-              
-            navigate(from, {replace: true});
+              .then(res => res.json())
+              .then(data => {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Wow!',
+                  text: 'Login Successfully'
+                })
+                navigate(from, {replace: true});
+                localStorage.setItem('post-acces-token', data.token)
+                console.log(data);
+                
+              })
         })
         .catch(error => {
             setError(error)
@@ -40,11 +57,33 @@ const Login = () => {
     const {signInwithGoogle} = useContext(AuthContext);
     const handleGoogle = () =>{
         signInwithGoogle()
-        .then(result=>{
-            const user = result.user;
-            console.log(user)
-            navigate('/')
-        })
+        .then(result => {
+          const user = result.user;
+          console.log(user);
+          
+            const loggedUser = {
+              email: user.email
+            }
+            console.log(loggedUser);
+            fetch('https://advisoropedia-assignment-server.vercel.app/jwt', {
+              method: "POST",
+              headers: {
+                'content-type': 'Application/json'
+              },
+              body: JSON.stringify(loggedUser)
+            })
+            .then(res => res.json())
+            .then(data => {
+              Swal.fire({
+                icon: 'success',
+                title: 'Wow!',
+                text: 'Login Successfully'
+              })
+              console.log(data);
+              localStorage.setItem('post-acces-token', data.token)
+              navigate(from, {replace: true});
+            })
+      })
         .catch(error=>setError(error.message))
     }
 

@@ -4,7 +4,7 @@ import { FaRegCommentDots } from "react-icons/fa6";
 import { IoMdShareAlt } from "react-icons/io";
 import { BiLike } from "react-icons/bi";
 const PostCard = ({ post }) => {
-    console.log(post);
+    // console.log(post);
     return (
         <div className="mb-16">
             <div className="flex items-center gap-4">

@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import PostCard from "./PostCard";
+import { AuthContext } from "../Provider/AuthProvider";
 
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
+    const {user} = useContext(AuthContext)
 
     useEffect(()=>{
-        fetch('http://localhost:5000/posts')
+        fetch(`https://advisoropedia-assignment-server.vercel.app/posts?email=${user?.email}`,{
+            method: "GET",
+            headers: {
+                authorization :
+                    `Bearer ${localStorage.getItem('post-acces-token')}`
+                }
+        })
         .then(res => res.json())
         .then(data => setPosts(data))
     },[])
@@ -15,7 +23,7 @@ const Posts = () => {
             <h1 className="text-5xl font-semibold my-10">All Posts: {posts.length}</h1>
             <div>
                 {
-                    posts?.map((post, index) => <PostCard key={index} post={post}></PostCard>)
+                   Posts && posts?.map((post, index) => <PostCard key={index} post={post}></PostCard>)
                 }
             </div>
         </div>
